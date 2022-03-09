@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-COMPRESSION_LEVEL = 1
+COMPRESSION_LEVEL = 2
 
 
 def average(image):
@@ -69,33 +69,45 @@ def compress(image, regions, rect=None, pos='1'):
 def save(filename, scale=1):
     image = cv2.imread(filename)
     height, width, _ = image.shape
-    image = cv2.resize(image, (int(scale * width), int(scale * height)))
+    width = int(scale * width)
+    height = int(scale * height)
+    image = cv2.resize(image, (width, height))
     
     regions = []
     compress(image, regions)
     cv2.waitKey()
+    
+    pixels = 0
+    for pos, *color in regions:
+        x1, y1, x2, y2 = pos_to_rect(image, pos)
+        pixels += (x2 - x1) * (y2 - y1)
+        
+    print(pixels, image.shape[0] * image.shape[1])
 
-    np.savetxt(filename.split('.')[0] + '.txt', np.array(regions, dtype=int), fmt='%u')
+    np.savetxt(filename.split('.')[0] + '.txt', np.array(regions, dtype=int), 
+               fmt='%u', header=f'{width} {height}', comments='')
     
     
 def load(filename):
-    data = np.loadtxt(filename, dtype=int)
-    max_pos = 0
-    for pos, r, g, b in data:
-        max_pos = max(max_pos, pos)
-    max_len = len(np.base_repr(max_pos, 4)[1:])
-    img = np.zeros((2**max_len, 2**max_len, 3), dtype=np.uint8)
+    with open(filename) as f:
+        width, height = map(int, f.readline().split())
+    img = np.zeros((height, width, 3), dtype=np.uint8)
     
-    for pos, b, g, r in data:
+    data = np.loadtxt(filename, dtype=int, skiprows=1)
+    pixels = 0
+    for pos, *color in data:
         x1, y1, x2, y2 = pos_to_rect(img, pos)
                 
-        print(x1, y1, x2, y2, r, g, b)
-        img[y1:y2, x1:x2, 0] = b
-        img[y1:y2, x1:x2, 1] = g
-        img[y1:y2, x1:x2, 2] = r
-        
+        #print(x1, y1, x2, y2, *color)
+        for i in range(3):
+            img[y1:y2, x1:x2, i] = color[i]
+
         cv2.imshow('frame', img)
         cv2.waitKey(1)
+        
+        pixels += (x2 - x1) * (y2 - y1)
+        
+    print(pixels, img.shape[0] * img.shape[1])
         
     cv2.waitKey()
 
@@ -103,4 +115,4 @@ def load(filename):
 #output = cv2.VideoWriter("mona_lisa.mp4", cv2.VideoWriter_fourcc(*'mp4v'), 30, (image.shape[1], image.shape[0]))
 save('mona_lisa.webp', 0.5)
 #output.release()
-#load('mona_lisa.txt')
+load('mona_lisa.txt')
