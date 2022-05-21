@@ -8,7 +8,7 @@ The compression uses a recursive algorithm. The input is an RGB-image so an 8-bi
 $$
 A \in \mathbb{Z}_{256}^{h \times w \times 3}
 $$
-where *w* and *h* are the image width and height in pixels, respectively.
+where w and h are the image width and height in pixels, respectively.
 The region of interest at the start is the whole image, so
 $$
 (x_1, y_1, x_2, y_2) = (0, 0, w, h)
@@ -34,10 +34,14 @@ $$
 If the detail level is above the threshold, the region is divided into 4 subregions and the function is called recursively for each subregion.
 The subregions are given by
 $$
-(x_1, y_1, x, y),
-(x, y_1, x_2, y), 
-(x_1, y, x, y_2), 
+(x_1, y_1, x, y), \;
+(x, y_1, x_2, y), \;
+(x_1, y, x, y_2), \;
 (x, y, x_2, y_2)
+$$
+where
+$$
+    x = \frac{x_1 + x_2}{2}, \; y = \frac{y_1 + y_2}{2}.
 $$
 
 ## Coordinate system

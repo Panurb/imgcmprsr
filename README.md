@@ -23,7 +23,9 @@ The average value of the region is calculated as simply the mean of each individ
 
 If the detail level is above the threshold, the region is divided into 4 subregions and the function is called recursively for each subregion.
 The subregions are given by
-<p align="center"><img src="svgs/d145f448dee6f6911b65ac32de336368.svg?invert_in_darkmode" align=middle width=361.72011315pt height=16.438356pt/></p>
+<p align="center"><img src="svgs/095a2b39880680d96f57d54dc7af6be8.svg?invert_in_darkmode" align=middle width=375.4184082pt height=16.438356pt/></p>
+where
+<p align="center"><img src="svgs/a35cbfd030a3023cd3db68dcaf267b54.svg?invert_in_darkmode" align=middle width=190.79704214999998pt height=31.985609699999994pt/></p>
 
 ## Coordinate system
 
