@@ -6,7 +6,7 @@ Image compression tool.
 
 The compression uses a recursive algorithm. The input is an RGB-image so an 8-bit integer array. We shall denote it by:
 <p align="center"><img src="svgs/2bac01daa5a1bdafb65698c8333b642e.svg?invert_in_darkmode" align=middle width=87.99479204999999pt height=19.406267099999997pt/></p>
-where *w* and *h* are the image width and height in pixels, respectively.
+where w and h are the image width and height in pixels, respectively.
 The region of interest at the start is the whole image, so
 <p align="center"><img src="svgs/37954f9daf267417ba7b05e026e07668.svg?invert_in_darkmode" align=middle width=193.85085389999998pt height=16.438356pt/></p>
 
