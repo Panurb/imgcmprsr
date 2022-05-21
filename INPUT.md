@@ -6,6 +6,27 @@ Image compression tool.
   <img src="mona_lisa.gif" alt="Mona Lisa" />
 </p>
 
+## Usage
+
+Compress an image by running:
+```
+python imgcmprsr.py path_to_input_file
+```
+Supported image formats are everything that OpenCV supports.
+
+You can also specify optional flags:
+```
+python imgcmprsr.py path_to_input_file --scale 0.5 --save_mp4 --save_gif
+```
+To scale the input image before compression or to save a video of the compression process in either .mp4 or .gif 
+format.
+
+Load a compressed image by running:
+```
+python imgcmprsr.py path_to_txt_file
+```
+
+
 ## Algorithm
 
 The compression uses a recursive algorithm. The input is an RGB-image so an 8-bit integer array. We shall denote it by:
