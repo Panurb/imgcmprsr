@@ -2,9 +2,11 @@ import argparse
 
 import cv2
 import numpy as np
+import imageio
 
 
 COMPRESSION_LEVEL = 3
+video_frames = []
 
 
 def average(image):
@@ -39,7 +41,7 @@ def pos_to_rect(image, pos):
 
 
 def compress(image, regions, rect=None, pos='1'):
-    global output
+    global video_frames
 
     if rect is None:
         rect = (0, 0, image.shape[1], image.shape[0])
@@ -62,9 +64,10 @@ def compress(image, regions, rect=None, pos='1'):
     else:
         for i in range(4):
             compress(image, regions, sub_rect(rect, i), pos + str(i))
-
-    #output.write(image)
+        
     if len(pos) < 5:
+        video_frames.append(image.copy())
+            
         cv2.imshow('frame', image)
         cv2.waitKey(1)
     
@@ -84,8 +87,6 @@ def save(filename, scale=1.0):
     for pos, *color in regions:
         x1, y1, x2, y2 = pos_to_rect(image, pos)
         pixels += (x2 - x1) * (y2 - y1)
-        
-    print(pixels, image.shape[0] * image.shape[1])
 
     np.savetxt(filename.split('.')[0] + '.txt', np.array(regions, dtype=int), 
                fmt='%u', header=f'{width} {height}', comments='')
@@ -101,7 +102,6 @@ def load(filename):
     for pos, *color in data:
         x1, y1, x2, y2 = pos_to_rect(img, pos)
                 
-        #print(x1, y1, x2, y2, *color)
         for i in range(3):
             img[y1:y2, x1:x2, i] = color[i]
 
@@ -110,19 +110,44 @@ def load(filename):
         
         pixels += (x2 - x1) * (y2 - y1)
         
-    print(pixels, img.shape[0] * img.shape[1])
-        
     cv2.waitKey()
 
 
 def main():
+    global video_frames
+
     parser = argparse.ArgumentParser()
     parser.add_argument('filename')
+    parser.add_argument('--scale', type=float, default=1.0)
+    parser.add_argument('--save_mp4', action=argparse.BooleanOptionalAction)
+    parser.add_argument('--save_gif', action=argparse.BooleanOptionalAction)
+    
+    args = parser.parse_args()
+    filename = args.filename
+    scale = args.scale
+    save_mp4 = args.save_mp4
+    save_gif = args.save_gif
+    
+    name, filetype = filename.split('.')
 
-    #output = cv2.VideoWriter("mona_lisa.mp4", cv2.VideoWriter_fourcc(*'mp4v'), 30, (image.shape[1], image.shape[0]))
-    save('mona_lisa.webp', 0.5)
-    #output.release()
-    load('mona_lisa.txt')
+    if filetype == 'txt':
+        load(filename)
+    else:
+        save(filename, scale)
+        
+        if save_mp4:
+            image = cv2.imread(filename)
+            height, width, _ = image.shape, 
+            shape = (int(scale * width), int(scale * height))
+            output = cv2.VideoWriter(name + '.mp4', 
+                                     cv2.VideoWriter_fourcc(*'mp4v'), 30, shape)
+            for frame in video_frames:
+                output.write(frame)
+            output.release()
+
+        if save_gif:
+            rgb_frames = [cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) for frame in video_frames]
+            imageio.mimsave(name + '.gif', rgb_frames)
 
 
 if __name__ == '__main__':
