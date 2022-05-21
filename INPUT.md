@@ -8,20 +8,20 @@ The compression uses a recursive algorithm. The input is an RGB-image so an 8-bi
 $$
 A \in \mathbb{Z}_{256}^{h \times w \times 3}
 $$
-where $w$ and $h$ are the image width and height in pixels, respectively.
+where *w* and *h* are the image width and height in pixels, respectively.
 The region of interest at the start is the whole image, so
 $$
-(x1, y1, x2, y2) = (0, 0, w, h)
+(x_1, y_1, x_2, y_2) = (0, 0, w, h)
 $$
 
-1. If the area of the region of interest is zero, we have reached the base case. Do nothing.
+If the area of the region of interest is zero, we have reached the base case. Do nothing.
 
-2. Otherwise, calculate detail level in region of interest. For this the following formula is used:
+Otherwise, calculate detail level in region of interest. For this the following formula is used:
 $$
 \mathrm{detail}(A) = \sum_k \max_{i,j}(A_{ijk}) - \min_{i,j}(A_{ijk})
 $$
 
-3. If this detail level in below a threshold value, defined as
+If this detail level in below a threshold value, defined as
 $$
 \mathrm{threshold} = 1000 \times \mathrm{compression level}
 $$
@@ -31,10 +31,13 @@ $$
 \mathrm{average}(A)_k = \frac{1}{hw}\sum_{i,j} A_{ijk}
 $$
 
-4. If the detail level is above the threshold, the region is divided into 4 subregions and the function is called recursively for each subregion.
+If the detail level is above the threshold, the region is divided into 4 subregions and the function is called recursively for each subregion.
 The subregions are given by
 $$
-(x1, y1, x, y)
+(x_1, y_1, x, y),
+(x, y_1, x_2, y), 
+(x_1, y, x, y_2), 
+(x, y, x_2, y_2)
 $$
 
 ## Coordinate system
@@ -65,4 +68,7 @@ components of its color.
 
 ## Acknowledgements
 
-This readme file was created using readme2tex.
+This readme file was created using readme2tex, using the command:
+```
+python -m readme2tex --nocdn --output README.md INPUT.md
+```
