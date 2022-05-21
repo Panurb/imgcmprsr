@@ -2,6 +2,10 @@
 
 Image compression tool.
 
+<p align="center">
+  <img src="mona_lisa.gif" alt="Mona Lisa" />
+</p>
+
 ## Algorithm
 
 The compression uses a recursive algorithm. The input is an RGB-image so an 8-bit integer array. We shall denote it by:
@@ -16,7 +20,7 @@ Otherwise, calculate detail level in region of interest. For this the following 
 <p align="center"><img src="svgs/73c1ba804c4f1224efc3738a7d7c2dbd.svg?invert_in_darkmode" align=middle width=279.69593684999995pt height=37.03214955pt/></p>
 
 If this detail level in below a threshold value, defined as
-<p align="center"><img src="svgs/9f0b9efc2356568b147eccfb22202676.svg?invert_in_darkmode" align=middle width=260.63959845pt height=14.611878599999999pt/></p>
+<p align="center"><img src="svgs/ab9ce491905759f03242d0f361501c0b.svg?invert_in_darkmode" align=middle width=252.4203891pt height=14.611878599999999pt/></p>
 the region is filled with the average value of all the pixels within it. 
 The average value of the region is calculated as simply the mean of each individual color channel:
 <p align="center"><img src="svgs/18f8fc3106ac74e5876a08ae376d25df.svg?invert_in_darkmode" align=middle width=193.7912031pt height=43.346758949999995pt/></p>
