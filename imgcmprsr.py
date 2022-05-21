@@ -1,16 +1,18 @@
+import argparse
+
 import cv2
 import numpy as np
 
 
-COMPRESSION_LEVEL = 2
+COMPRESSION_LEVEL = 3
 
 
 def average(image):
-    return np.array(np.mean(image, axis=(0, 1)), dtype=np.uint8)
+    return np.mean(image, axis=(0, 1))
     
 
 def detail(image):
-    return sum(np.var(image, axis=(0, 1)))
+    return sum([np.max(image[:, :, c]) - np.min(image[:, :, c]) for c in range(3)])
     
     
 def sub_rect(rect, index):
@@ -52,7 +54,7 @@ def compress(image, regions, rect=None, pos='1'):
     img = image[y1:y2, x1:x2]
     dtl = detail(img)
     
-    if dtl < COMPRESSION_LEVEL * 1000:
+    if dtl < COMPRESSION_LEVEL * 100:
         avg = average(img)
         image[y1:y2, x1:x2] = np.dstack(
             [c * np.ones((height, width)) for c in avg])
@@ -62,11 +64,12 @@ def compress(image, regions, rect=None, pos='1'):
             compress(image, regions, sub_rect(rect, i), pos + str(i))
 
     #output.write(image)
-    cv2.imshow('frame', image)
-    cv2.waitKey(1)
+    if len(pos) < 5:
+        cv2.imshow('frame', image)
+        cv2.waitKey(1)
     
     
-def save(filename, scale=1):
+def save(filename, scale=1.0):
     image = cv2.imread(filename)
     height, width, _ = image.shape
     width = int(scale * width)
@@ -112,7 +115,15 @@ def load(filename):
     cv2.waitKey()
 
 
-#output = cv2.VideoWriter("mona_lisa.mp4", cv2.VideoWriter_fourcc(*'mp4v'), 30, (image.shape[1], image.shape[0]))
-save('mona_lisa.webp', 0.5)
-#output.release()
-load('mona_lisa.txt')
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('filename')
+
+    #output = cv2.VideoWriter("mona_lisa.mp4", cv2.VideoWriter_fourcc(*'mp4v'), 30, (image.shape[1], image.shape[0]))
+    save('mona_lisa.webp', 0.5)
+    #output.release()
+    load('mona_lisa.txt')
+
+
+if __name__ == '__main__':
+    main()
